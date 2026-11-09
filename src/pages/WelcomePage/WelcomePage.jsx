@@ -8,7 +8,7 @@ function WelcomePage({ onOpenInvitation }) {
       <p>Wedding Invitation</p>
 
       <button onClick={onOpenInvitation}>
-        打開喜帖
+        打開喜
       </button>
     </main>
   )
