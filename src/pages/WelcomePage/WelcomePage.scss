@@ -14,15 +14,14 @@
   isolation: isolate;
   width: 100%;
   min-height: 100svh;
-  overflow: hidden;
   color: var(--text-blue);
-  background: var(--blue-pale);
+  background: transparent;
 
   &::before {
     content: "";
-    position: absolute;
+    position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: 0;
 
     background-image: var(--sky-background);
     background-position: center top;
@@ -36,14 +35,10 @@
   img {
     display: block;
     max-width: 100%;
-    height: auto;
-    user-select: none;
-    -webkit-user-drag: none;
   }
 
   button {
     font: inherit;
-    -webkit-tap-highlight-color: transparent;
   }
 
   audio {
@@ -51,6 +46,26 @@
   }
 }
 
+.welcome-card {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+
+  width: min(100%, 430px);
+  min-height: 100svh;
+  margin: 0 auto;
+  overflow: hidden;
+
+  background-color: var(--blue-pale);
+  background-image: var(--sky-background);
+  background-position: center top;
+  background-repeat: repeat-y;
+  background-size: 100% auto;
+
+  box-shadow:
+    0 0 25px rgba(65, 103, 145, 0.18),
+    0 0 60px rgba(65, 103, 145, 0.1);
+}
 
 /* ========================================
    第一區：照片列印
@@ -161,6 +176,7 @@
 
 /* 收信提示 */
 
+/* 收信提示 */
 .letter-prompt {
   position: relative;
   z-index: 3;
@@ -168,48 +184,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
 
-  margin-top: 5px;
+  width: 100%;
+  gap: 13px;
+  margin-top: 12px;
   padding: 0;
 
   border: 0;
   background: transparent;
   color: var(--blue-dark);
-
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(12px);
-
-  transition:
-    opacity 0.8s ease,
-    transform 0.8s ease,
-    visibility 0.8s ease;
-
-  &.is-visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
-
-  &:disabled {
-    cursor: default;
-  }
-}
-
-
-.letter-prompt {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-
-  width: 100%;
-  margin-top: 5px;
-  padding: 0;
-
-  border: 0;
-  background: transparent;
   cursor: pointer;
 
   opacity: 0;
@@ -232,23 +215,23 @@
   }
 }
 
-/* 叮咚！邀請函標題圖 */
+/* 叮咚！邀請函標題 */
 .prompt-title {
-  width: min(82vw, 360px);
+  width: min(52vw, 220px);
   height: auto;
 }
 
 /* 點擊此處收信 */
 .prompt-subtitle {
-  width: min(42vw, 180px);
+  width: min(29vw, 120px);
   height: auto;
 }
 
-/* 愛心上下浮動 */
+/* 愛心 */
 .prompt-heart {
-  width: 32px;
+  width: 40px;
   height: auto;
-  margin-top: 2px;
+  margin-top: 0;
 
   animation: heart-float 1.5s ease-in-out infinite;
 }
@@ -310,47 +293,71 @@
   position: absolute;
   z-index: 2;
 
-  width: 69%;
-  left: 15.5%;
-  top: 2%;
+  width: 72%;
+  left: 25%;
+  top: 7%;
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
 
   .envelope-back {
     position: relative;
     z-index: 1;
-    width: 100%;
+    left: 1%;
+    width: 98%;
   }
 
   .envelope-photo {
     position: absolute;
     z-index: 2;
-    width: 73.5%;
-    left: 13.25%;
+
+    width: 80%;
+    left: 8%;
     top: 2%;
-    transform: translateY(0);
+
+    transform: rotate(10deg) translateY(18%);
+    transform-origin: center bottom;
   }
 
   .envelope-front {
     position: absolute;
     z-index: 3;
-    width: 102%;
-    left: -1%;
-    top: 22%;
+
+    width: 100%;
+    top: 28%;
+  }
+}
+
+
+/* 信封整體進場 */
+
+.is-active .envelope {
+  animation: envelope-enter 0.9s 0.2s ease-out forwards;
+}
+
+@keyframes envelope-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
 /* 照片滑出 */
-
 .is-active .envelope-photo {
-  animation: envelope-photo-out 1.2s 0.3s ease-out both;
+  animation: envelope-photo-out 3.5s 2.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes envelope-photo-out {
   from {
-    transform: translateY(0);
+    transform: rotate(12deg) translateY(18%);
   }
 
   to {
-    transform: translateY(-14%);
+    transform: rotate(8deg) translateY(-12%);
   }
 }
 
@@ -363,17 +370,18 @@
   position: absolute;
   z-index: 4;
 
-  width: 23%;
-  left: 1%;
-  top: 42%;
+  width: 33%;
+  left: 6%;
+  top: 12%;
 
   opacity: 0;
-  transform: translateY(-35px) rotate(-7deg);
+  transform: translateY(-35px) rotate(-11deg);
 
   img {
     width: 100%;
   }
 }
+
 .is-active .side-photo {
   animation: side-photo-enter 1s 1s ease-out forwards;
 }
@@ -381,22 +389,20 @@
 @keyframes side-photo-enter {
   to {
     opacity: 1;
-    transform: translateY(0) rotate(-7deg);
+    transform: translateY(0) rotate(-11deg);
   }
 }
-
 
 /* ========================================
    右側黑膠與唱臂
 ======================================== */
-
 .vinyl-scene {
   position: absolute;
   z-index: 5;
 
-  width: 32%;
-  right: 1%;
-  top: 49%;
+  width: 45%;
+  right: -4%;
+  top: 50%;
 }
 
 .vinyl-record {
@@ -415,8 +421,8 @@
   position: absolute;
 
   width: 46%;
-  right: -8%;
-  top: -17%;
+  right: -15%;
+  top: 20%;
 
   opacity: 0;
   transform: rotate(-20deg);
@@ -467,14 +473,19 @@
   }
 }
 
+.is-active .couple-title {
+  animation: content-enter 0.8s 2.5s ease-out forwards;
+}
+
+
 
 /* ========================================
-   翻頁倒數
+   翻頁倒數 Flip Clock
 ======================================== */
 
 .countdown-area {
   width: 100%;
-  margin-top: 22px;
+  margin-top: 20px;
 
   display: flex;
   justify-content: center;
@@ -492,7 +503,7 @@
   justify-content: center;
   align-items: center;
   gap: clamp(7px, 2.2vw, 13px);
-  perspective: 500px;
+  perspective: 600px;
 }
 
 .flip-unit {
@@ -500,6 +511,8 @@
   align-items: center;
   gap: 4px;
 }
+
+/* 數字卡片 */
 
 .flip-card {
   position: relative;
@@ -521,66 +534,109 @@
   font-weight: 500;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+
+  transform-style: preserve-3d;
 }
 
-.flip-card-top,
-.flip-card-flap {
+/* 數字共用樣式 */
+
+.flip-face {
   position: absolute;
-  inset: 0 0 50%;
+  inset: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding-top: 4px;
-  border-radius: 6px 6px 0 0;
+  padding-bottom: 2px;
 
   background: linear-gradient(180deg,
       #83a8d5,
       #7398c7);
 
-  overflow: hidden;
-}
-
-.flip-card-bottom {
-  position: absolute;
-  inset: 50% 0 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding-bottom: 4px;
-  border-top: 1px solid rgba(55, 91, 135, 0.28);
-  border-radius: 0 0 6px 6px;
-
-  background: linear-gradient(180deg,
-      #6489b8,
-      #7398c7);
-
-  overflow: hidden;
-}
-
-.flip-card-flap {
-  transform-origin: bottom;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
-.flip-card.is-flipping .flip-card-flap {
-  animation: flip-number 0.45s ease-in forwards;
+/* 上半部 */
+
+.flip-top,
+.flip-flap-top {
+  clip-path: inset(0 0 50% 0);
 }
 
-@keyframes flip-number {
+/* 下半部 */
+
+.flip-bottom,
+.flip-flap-bottom {
+  clip-path: inset(50% 0 0 0);
+}
+
+/* 中央水平分隔線 */
+
+.flip-card::after {
+  content: "";
+  position: absolute;
+  z-index: 5;
+
+  top: 50%;
+  left: 0;
+
+  width: 100%;
+  height: 1px;
+
+  background: rgba(55, 91, 135, 0.35);
+  pointer-events: none;
+}
+
+/* 舊數字上半部翻走 */
+
+.flip-flap-top {
+  z-index: 3;
+  transform-origin: center 50%;
+}
+
+.flip-card.is-flipping .flip-flap-top {
+  animation: flip-top 0.3s ease-in forwards;
+}
+
+/* 新數字下半部翻入 */
+
+.flip-flap-bottom {
+  z-index: 2;
+  transform-origin: center 50%;
+  transform: rotateX(90deg);
+}
+
+.flip-card.is-flipping .flip-flap-bottom {
+  animation: flip-bottom 0.3s 0.3s ease-out forwards;
+}
+
+/* 上半部翻頁 */
+
+@keyframes flip-top {
   from {
-    transform: rotateX(0);
-    opacity: 1;
+    transform: rotateX(0deg);
   }
 
   to {
     transform: rotateX(-90deg);
-    opacity: 0;
   }
 }
+
+/* 下半部翻入 */
+
+@keyframes flip-bottom {
+  from {
+    transform: rotateX(90deg);
+  }
+
+  to {
+    transform: rotateX(0deg);
+  }
+}
+
+/* 中文單位 */
 
 .flip-unit-label {
   color: #6e91bb;
@@ -588,6 +644,36 @@
   white-space: nowrap;
 }
 
+/* ========================================
+   婚禮倒數完成動畫
+======================================== */
+
+.countdown-result {
+  position: relative;
+}
+
+.countdown-result.is-completed {
+  animation: countdown-finish 0.7s ease-out both;
+  transform-origin: center;
+}
+
+@keyframes countdown-finish {
+  0% {
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(1.08);
+  }
+
+  75% {
+    transform: scale(0.97);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
 
 /* ========================================
    愛心與線條
@@ -695,10 +781,6 @@
     height: calc(92vw * 1.85);
   }
 
-  .letter-prompt {
-    margin-top: 3px;
-  }
-
   .invitation-section {
     padding-inline: 14px;
   }
@@ -723,8 +805,8 @@
   }
 
   .printer-scene {
-    width: min(70vw, 380px);
-    height: calc(min(70vw, 380px) * 1.85);
+    width: min(88%, 380px);
+    height: calc(min(88%, 380px) * 1.85);
   }
 
   .invitation-section {
@@ -732,8 +814,8 @@
   }
 
   .invitation-scene {
-    width: min(80vw, 430px);
-    height: min(80vw, 430px);
+    width: 100%;
+    height: min(94vw, 380px);
   }
 }
 
@@ -750,5 +832,25 @@
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+/* ========================================
+   手機版：取消卡片邊界
+======================================== */
+
+@media (max-width: 599px) {
+  .welcome-page {
+    background: var(--blue-pale);
+
+    &::before {
+      display: none;
+    }
+  }
+
+  .welcome-card {
+    width: 100%;
+    min-height: 100svh;
+    box-shadow: none;
   }
 }

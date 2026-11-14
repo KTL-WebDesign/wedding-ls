@@ -7,7 +7,7 @@ import "./WelcomePage.scss";
 const BASE = `${import.meta.env.BASE_URL}assets/welcome/`;
 const asset = (name) => `${BASE}${name}`;
 
-const WEDDING_DATE = new Date(2026, 11, 13, 0, 0, 0);
+const WEDDING_DATE = new Date("2026-12-13T17:00:00+08:00");
 
 function getCountdown() {
   const now = new Date();
@@ -23,13 +23,69 @@ function getCountdown() {
 
 // 翻頁數字
 
+
 function FlipUnit({ value, label }) {
   const current = String(value).padStart(2, "0");
 
+  const [displayValue, setDisplayValue] = useState(current);
+  const [nextValue, setNextValue] = useState(current);
+  const [isFlipping, setIsFlipping] = useState(false);
+
+  const timerRef = useRef(null);
+  const displayRef = useRef(current);
+
+  useEffect(() => {
+    if (current === displayRef.current) return;
+
+    // 先記錄舊數字，並立即更新 ref，避免重複觸發
+    const previous = displayRef.current;
+    displayRef.current = current;
+
+    window.clearTimeout(timerRef.current);
+
+    // 固定這次翻頁的前後數字
+    setDisplayValue(previous);
+    setNextValue(current);
+    setIsFlipping(true);
+
+    timerRef.current = window.setTimeout(() => {
+      setDisplayValue(current);
+      setIsFlipping(false);
+    }, 600);
+
+    return () => {
+      window.clearTimeout(timerRef.current);
+    };
+  }, [current]);
+
   return (
     <div className="flip-unit">
-      <div className="flip-card" key={current}>
-        <span className="flip-card-number">{current}</span>
+      <div className={`flip-card ${isFlipping ? "is-flipping" : ""}`}>
+
+        {/* 底層：新數字上半部 */}
+        <div className="flip-face flip-top">
+          {nextValue}
+        </div>
+
+        {/* 底層：舊數字下半部 */}
+        <div className="flip-face flip-bottom">
+          {displayValue}
+        </div>
+
+        {/* 上半部：舊數字向後翻 */}
+        {isFlipping && (
+          <div className="flip-face flip-flap-top">
+            {displayValue}
+          </div>
+        )}
+
+        {/* 下半部：新數字向前翻入 */}
+        {isFlipping && (
+          <div className="flip-face flip-flap-bottom">
+            {nextValue}
+          </div>
+        )}
+
       </div>
 
       <span className="flip-unit-label">{label}</span>
@@ -38,8 +94,14 @@ function FlipUnit({ value, label }) {
 }
 
 
-function FlipCountdown() {
+function FlipCountdown({ isActive }) {
   const [time, setTime] = useState(getCountdown);
+
+  const isCompleted =
+    time.days === 0 &&
+    time.hours === 0 &&
+    time.minutes === 0 &&
+    time.seconds === 0;
 
   useEffect(() => {
     const update = () => setTime(getCountdown());
@@ -50,11 +112,16 @@ function FlipCountdown() {
   }, []);
 
   return (
-    <div className="flip-countdown" aria-label="婚禮倒數">
-      <FlipUnit value={time.days} label="天" />
-      <FlipUnit value={time.hours} label="時" />
-      <FlipUnit value={time.minutes} label="分" />
-      <FlipUnit value={time.seconds} label="秒" />
+    <div
+      className={`countdown-result ${isActive && isCompleted ? "is-completed" : ""
+        }`}
+    >
+      <div className="flip-countdown" aria-label="婚禮倒數">
+        <FlipUnit value={time.days} label="天" />
+        <FlipUnit value={time.hours} label="時" />
+        <FlipUnit value={time.minutes} label="分" />
+        <FlipUnit value={time.seconds} label="秒" />
+      </div>
     </div>
   );
 }
@@ -71,6 +138,7 @@ function WelcomePage() {
   const [printFinished, setPrintFinished] = useState(false);
   const [letterOpened, setLetterOpened] = useState(false);
   const [showFinalButton, setShowFinalButton] = useState(false);
+  const [countdownEntered, setCountdownEntered] = useState(false);
 
   useEffect(() => {
     // 進入頁面後 1 秒開始列印
@@ -137,6 +205,7 @@ function WelcomePage() {
         "--sky-background": `url("${asset("background-sky.png")}")`,
       }}
     >
+        <div className="welcome-card">
       <audio
         ref={audioRef}
         src={asset("bgm.mp3")}
@@ -243,7 +312,7 @@ function WelcomePage() {
           {/* 左側照片條 */}
           <div className="side-photo">
             <img
-              src={asset("photo-strip.png")}
+              src={asset("photo-strip-2.png")}
               alt="新人照片"
               draggable="false"
             />
@@ -279,8 +348,15 @@ function WelcomePage() {
         </div>
 
         {/* 倒數 */}
-        <div className="countdown-area">
-          <FlipCountdown />
+        <div
+          className="countdown-area"
+          onAnimationEnd={(event) => {
+            if (event.target === event.currentTarget) {
+              setCountdownEntered(true);
+            }
+          }}
+        >
+          <FlipCountdown isActive={countdownEntered} />
         </div>
 
         {/* 愛心及線條 */}
@@ -308,6 +384,7 @@ function WelcomePage() {
           />
         </button>
       </section>
+        </div>
     </main>
   );
 }
