@@ -112,38 +112,45 @@
   aspect-ratio: 1000 / 831;
 }
 
-/* 熊貓印表機 */
-.printer-image {
+
+/* 熊貓印表機 GIF */
+.welcome-page .printer-art img.printer-image {
   position: absolute;
   z-index: 2;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: -1%
+;
+  left: 50%;
+
+  display: block;
+  width: 120%;
+  max-width: none;
+  height: auto;
+
+  transform: translateX(-49%);
+
+  pointer-events: none;
+  user-select: none;
 }
 
 /* 照片條 */
 
-/* 照片從印表機出紙口向下印出 */
+
+/* 照片條：逐格列印 */
+
 .printed-photo {
   position: absolute;
   z-index: 3;
 
-  /* 出紙口位置 */
   top: 69%;
   left: 50%;
-
   width: 50%;
 
   transform: translateX(-50%);
-
   overflow: hidden;
   pointer-events: none;
 
-  /*
-    初始只露出最底下的一小段。
-    遮罩從上方遮住，底部保持可見。
-  */
-  clip-path: inset(99% 0 0 0);
+  /* 初始只露出照片最底端 */
+  clip-path: inset(99.8% 0 0 0);
 
   img {
     display: block;
@@ -152,78 +159,107 @@
   }
 
   &.is-printing {
-    animation: photo-print 3.8s cubic-bezier(0.35, 0, 0.25, 1) forwards;
+    animation: photo-print 3.8s steps(18, end) forwards;
   }
 
   &.is-finished {
-    clip-path: inset(0 0 0 0);
+    clip-path: inset(0);
+    transform: translateX(-50%);
     animation: none;
   }
 }
 
-/* 從最底端逐漸往上露出照片 */
+/* 從底部開始顯影，並逐步往下送紙 */
 @keyframes photo-print {
   from {
-    clip-path: inset(99% 0 0 0);
+    clip-path: inset(99.8% 0 0 0);
+    transform: translate(-50%, -100%);
   }
 
   to {
-    clip-path: inset(0 0 0 0);
+    clip-path: inset(0);
+    transform: translate(-50%, 0);
   }
 }
 
 
 
-/* 收信提示 */
 
-/* 收信提示 */
+
+
+/* ========================================
+   收信彈出視窗
+======================================== */
+
+.letter-modal {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 24px;
+
+  animation: modal-fade-in 0.5s ease-out both;
+}
+
+/* 背景遮罩 */
+.letter-backdrop {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(67, 103, 145, 0.25);
+
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+/* 收信提示視窗 */
 .letter-prompt {
   position: relative;
-  z-index: 3;
+  z-index: 1;
 
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  width: 100%;
+  width: min(100%, 360px);
   gap: 13px;
-  margin-top: 12px;
-  padding: 0;
 
-  border: 0;
-  background: transparent;
+  margin: 0;
+  padding: 30px 20px;
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+
+  background: rgba(235, 247, 255, 0.96);
+
+  box-shadow:
+    0 12px 40px rgba(65, 103, 145, 0.2),
+    0 3px 10px rgba(65, 103, 145, 0.08);
+
   color: var(--blue-dark);
   cursor: pointer;
 
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(12px);
+  animation: prompt-pop-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 
-  transition:
-    opacity 0.8s ease,
-    transform 0.8s ease,
-    visibility 0.8s ease;
-
-  &.is-visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
-
-  &:disabled {
-    cursor: default;
+  &:focus-visible {
+    outline: 2px solid var(--blue-dark);
+    outline-offset: 4px;
   }
 }
 
-/* 叮咚！邀請函標題 */
+/* 標題 */
 .prompt-title {
-  width: min(52vw, 220px);
+  width: min(100%, 220px);
   height: auto;
 }
 
-/* 點擊此處收信 */
+/* 副標題 */
 .prompt-subtitle {
-  width: min(29vw, 120px);
+  width: min(100%, 120px);
   height: auto;
 }
 
@@ -236,15 +272,27 @@
   animation: heart-float 1.5s ease-in-out infinite;
 }
 
-@keyframes heart-float {
-
-  0%,
-  100% {
-    transform: translateY(0);
+/* 遮罩淡入 */
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
   }
 
-  50% {
-    transform: translateY(-8px);
+  to {
+    opacity: 1;
+  }
+}
+
+/* 視窗彈出 */
+@keyframes prompt-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -852,5 +900,29 @@
     width: 100%;
     min-height: 100svh;
     box-shadow: none;
+  }
+}
+
+/* ========================================
+   收信視窗 RWD
+======================================== */
+
+/* 手機 */
+@media (max-width: 599px) {
+  .letter-modal {
+    padding: 20px;
+  }
+
+  .letter-prompt {
+    width: min(100%, 340px);
+    padding: 26px 18px;
+    gap: 12px;
+  }
+}
+
+/* 平板 */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .letter-prompt {
+    width: min(90%, 360px);
   }
 }
