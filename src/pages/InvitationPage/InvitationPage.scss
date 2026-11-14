@@ -1,5 +1,725 @@
+/* ========================================
+   INVITATION PAGE
+======================================== */
+
 .invitation-page {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
   min-height: 100vh;
-  text-align: center;
-  padding: 40px 20px;
+  background: transparent;
+
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+
+    background-image: var(--sky-background);
+    background-position: center top;
+    background-repeat: repeat-y;
+    background-size: 100% auto;
+
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* 中央喜帖框架 */
+
+.invitation-card {
+  position: relative;
+  z-index: 1;
+
+  width: min(100%, 430px);
+  min-height: 100vh;
+  margin: 0 auto;
+  overflow: hidden;
+
+  background-color: #fff;
+  background-image: var(--paper-background);
+  background-repeat: repeat;
+  background-size: 100% auto;
+
+  box-shadow:
+    0 0 25px rgba(65, 103, 145, 0.18),
+    0 0 60px rgba(65, 103, 145, 0.1);
+}
+
+/* ========================================
+   01｜KV 主視覺
+======================================== */
+
+.invite-kv {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+.invitation-page .invite-kv-bg {
+  display: block;
+  width: 104%;
+  max-width: none;
+  height: auto;
+  margin-left: -2%;
+}
+
+.invite-kv-title {
+  position: absolute;
+  z-index: 2;
+
+  top: 5%;
+  left: 9%;
+
+  width: 30%;
+  height: auto;
+}
+
+/* ========================================
+   02｜新人介紹
+======================================== */
+
+.invite-introduction {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+
+/* 日期與標題 */
+.invite-intro-heading {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 18px 20px 20px;
+}
+
+.invite-part2-time {
+  display: block;
+  width: 58%;
+  max-width: 250px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.invite-part2-title {
+  display: block;
+  width: 64%;
+  max-width: 275px;
+  height: auto;
+  margin: 0 auto;
+}
+
+/* 照片跑馬燈 */
+
+.invite-film-marquee {
+  position: relative;
+  z-index: 1;
+
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+
+  overflow: hidden;
+  line-height: 0;
+}
+
+.invite-film-track {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+
+  width: max-content;
+  gap: 0;
+
+  animation: film-marquee 55s linear infinite;
+}
+
+.invite-film-track img {
+  display: block;
+
+  width: auto;
+  height: 210px;
+  max-width: none;
+
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+/* 無縫循環 */
+
+@keyframes film-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* 底部文字裝飾 */
+.invite-part2-span {
+  position: relative;
+  z-index: 1;
+
+  display: block;
+  width: 62%;
+  max-width: 270px;
+  height: auto;
+
+  margin: 22px auto 48px;
+}
+
+/* ========================================
+   新人介紹區
+======================================== */
+
+.invite-couple-scene {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+}
+
+/* 背景：靜態 */
+.invite-couple-bg {
+  display: block;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: auto;
+}
+
+/* INVITATION 標題 */
+.invite-couple-title {
+  position: absolute;
+  z-index: 2;
+
+  top: 16%;
+  left: 50%;
+
+  width: 60%;
+  max-width: 230px;
+  height: auto;
+
+  transform: translateX(-50%);
+}
+
+/* 新人介紹疊圖區 */
+.invite-couple {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+
+  width: 100%;
+  height: 100%;
+  line-height: 0;
+}
+
+/* 左右手：超出喜帖框架 */
+.invite-groom,
+.invite-bride {
+  position: absolute;
+  top: 10%;
+
+  width: 40%;
+  max-width: none;
+  height: auto;
+  z-index: 3;
+  animation: handSway 2.4s ease-in-out infinite alternate;
+}
+
+/* 左手 */
+.invite-groom {
+  left: -3%;
+  transform-origin: 15% 80%;
+}
+
+/* 右手 */
+.invite-bride {
+  right: -3%;
+  transform-origin: 85% 80%;
+}
+
+/* 新人姓名、愛心、主婚人資訊 */
+.invite-couple-content {
+  position: absolute;
+  z-index: 2;
+
+  top: 39%;
+  left: 14%;
+
+  display: block;
+  width: 72%;
+  max-width: none;
+  height: auto;
+}
+
+/* 兩隻手同步擺動 */
+@keyframes handSway {
+  0% {
+    transform: rotate(-7deg);
+  }
+
+  100% {
+    transform: rotate(7deg);
+  }
+}
+
+/* 新人照片：靜態 */
+.invite-couple-photo {
+  position: relative;
+  z-index: 1;
+
+  display: block;
+  width: 100%;
+  height: auto;
+
+  transform: translateY(-35px);
+  margin-bottom: -20px;
+}
+
+/* ========================================
+   03｜DATE & TIME
+======================================== */
+
+.invite-datetime {
+  position: relative;
+  width: 100%;
+  padding-top: 12px;
+
+  background-color: #fff;
+  background-image: var(--paper-background);
+  background-repeat: repeat;
+  background-size: 100% auto;
+}
+
+/* DATE & TIME 標題 */
+.invite-section-title {
+  display: block;
+  width: 60%;
+  max-width: 290px;
+  margin: 0 auto;
+}
+
+/* 日期文字 */
+.invite-datetime-time {
+  display: block;
+  width: 88%;
+  max-width: 380px;
+  margin: 8px auto 14px;
+}
+
+/* 月曆 */
+.invite-calendar {
+  position: relative;
+  width: 76%;
+  max-width: 330px;
+  margin: 0 auto 30px;
+  line-height: 0;
+}
+
+.invite-calendar-bg {
+  display: block;
+  width: 100%;
+}
+
+.invite-calendar-content {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  display: block;
+  width: 100%;
+}
+
+.invite-calendar-heart {
+  position: absolute;
+
+  width: 12%;
+  right: 12%;
+  bottom: 24%;
+}
+
+/* Wedding Program */
+.invite-program {
+  position: relative;
+  width: 68%;
+  max-width: 295px;
+  margin: 0 auto;
+  line-height: 0;
+}
+
+.invite-program-bg {
+  display: block;
+  width: 100%;
+}
+
+/* 流程標題裝飾 */
+.invite-program-line {
+  position: absolute;
+  left: 0;
+  top: 5%;
+
+  width: 100%;
+}
+
+/* 流程內容 */
+.invite-program-item {
+  position: absolute;
+  width: 75%;
+  height: auto;
+  max-width: none;
+  left: 12.5%;
+}
+
+.program-one {
+  top: 24%;
+}
+
+.program-two {
+  top: 43%;
+}
+
+.program-three {
+  top: 62%;
+}
+
+/* 底部裝飾角色 */
+.invite-program-photo {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+}
+
+/* 加入行事曆 */
+.invite-program-button {
+  display: block;
+  width: 68%;
+  max-width: 290px;
+  margin: 12px auto 0;
+}
+
+/* 下方照片 */
+.invite-datetime-bottom {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+}
+
+/* ========================================
+   04｜LOCATION
+======================================== */
+
+.invite-location {
+  position: relative;
+  width: 100%;
+  background: #e5f5ff;
+}
+
+.invite-location-heading {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+}
+
+.invite-location-bg {
+  width: 100%;
+}
+
+.invite-location-flower {
+  position: absolute;
+  z-index: 2;
+  width: 12%;
+}
+
+.flower-one {
+  left: 5%;
+  top: 40%;
+}
+
+.flower-two {
+  right: 5%;
+  top: 55%;
+}
+
+.invite-location-title {
+  position: absolute;
+  z-index: 3;
+
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.invite-location-content {
+  position: absolute;
+  z-index: 3;
+
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+
+.invite-location-photo {
+  width: 100%;
+}
+
+/* 地圖按鈕 */
+
+.invite-map {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+}
+
+.invite-map>img:first-child {
+  width: 100%;
+}
+
+.invite-map-button {
+  position: absolute;
+  z-index: 2;
+
+  width: 55%;
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+}
+
+/* ========================================
+   05｜SAVE THE DATE
+======================================== */
+
+.invite-ending {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+}
+
+.invite-ending>img:first-child {
+  width: 100%;
+}
+
+.invite-scroll-top {
+  position: absolute;
+  z-index: 3;
+
+  width: 18%;
+  right: 5%;
+  bottom: 8%;
+
+  cursor: pointer;
+}
+
+/* ========================================
+   TABLET / DESKTOP
+======================================== */
+
+@media (min-width: 600px) {
+  .invitation-card {
+    width: min(100%, 430px);
+  }
+}
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 599px) {
+  .invitation-page {
+    background: #fff;
+
+    &::before {
+      display: none;
+    }
+  }
+
+  .invitation-card {
+    width: 100%;
+    box-shadow: none;
+  }
+}
+
+
+/* ========================================
+   頂部音樂控制
+======================================== */
+
+.invitation-card {
+  position: relative;
+}
+
+.music-control {
+  position: absolute;
+  z-index: 100;
+
+  top: 16px;
+  right: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+  padding: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+
+  color: #fff;
+  background: rgba(115, 152, 199, 0.9);
+
+  box-shadow: 0 3px 10px rgba(65, 103, 145, 0.2);
+
+  font-size: 23px;
+  cursor: pointer;
+
+  &:active {
+    transform: scale(0.92);
+  }
+}
+
+/* ========================================
+   最底部操作按鈕
+======================================== */
+
+/* 頁面底部操作區 */
+.invite-bottom-actions {
+  position: relative !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+
+  width: 100%;
+  height: auto;
+  min-height: 100px;
+  padding: 24px 20px 32px;
+  margin: 0;
+
+  background: #fff;
+  z-index: 20;
+  overflow: visible;
+}
+
+/* 返回首頁 */
+.invite-back-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+
+  position: relative !important;
+  width: auto;
+  height: 44px;
+  padding: 0 20px;
+
+  border: 1px solid #6b8fb8;
+  border-radius: 30px;
+  background: #fff;
+  color: #5b80aa;
+
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 21;
+}
+
+/* 回到頂部 */
+.invite-top-button {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+
+  position: relative !important;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 21;
+}
+
+.invite-top-button img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+
+/* INTRO FADE｜頁面載入淡入 */
+.intro-fade {
+  opacity: 0;
+  animation: introFadeIn 1s ease forwards;
+}
+
+.invite-part2-time.intro-fade-delay {
+  animation-delay: 0.5s;
+}
+
+.invite-part2-title.intro-fade-delay {
+  animation-delay: 1s;
+}
+
+@keyframes introFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* SCROLL REVEAL｜捲動進入淡入 */
+.invitation-page.reveal-ready {
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.9s ease,
+      transform 0.9s ease;
+  }
+
+  .scroll-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 減少動態效果設定 */
+@media (prefers-reduced-motion: reduce) {
+  .intro-fade {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+
+  .invitation-page.reveal-ready .scroll-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
