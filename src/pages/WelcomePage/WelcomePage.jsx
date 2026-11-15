@@ -162,11 +162,6 @@ function WelcomePage() {
   }, []);
 
 
-  images.forEach((src) => {
-    const img = new Image();
-    img.src = src;
-  });
-}, []);
 
 useEffect(() => {
   window.scrollTo({
