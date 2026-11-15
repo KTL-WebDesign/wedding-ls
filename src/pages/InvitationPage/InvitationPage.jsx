@@ -9,11 +9,19 @@ const BASE = `${import.meta.env.BASE_URL}assets/invitation/`;
 const WELCOME_BASE = `${import.meta.env.BASE_URL}assets/welcome/`;
 
 const asset = (name) => `${BASE}${name}`;
+const endingPhotos = [
+  "theend-photo-1.png",
+  "theend-photo-2.png",
+  "theend-photo-3.png",
+  "theend-photo-4.png",
+  "theend-photo-5.png",
+];
 
 function InvitationPage({ isPlaying, toggleMusic }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [confettiKey, setConfettiKey] = useState(0);
+  const [showTransportModal, setShowTransportModal] = useState(false);
   const pageRef = useRef(null);
 
   useEffect(() => {
@@ -58,9 +66,9 @@ function InvitationPage({ isPlaying, toggleMusic }) {
       ref={pageRef}
       className="invitation-page"
       style={{
-  "--sky-background": `url("${window.location.origin}${import.meta.env.BASE_URL}assets/welcome/background-sky.png")`,
-  "--paper-background": `url("${window.location.origin}${import.meta.env.BASE_URL}assets/invitation/paper-bg.png")`,
-}}
+        "--sky-background": `url("${window.location.origin}${import.meta.env.BASE_URL}assets/welcome/background-sky.png")`,
+        "--paper-background": `url("${window.location.origin}${import.meta.env.BASE_URL}assets/invitation/paper-bg.png")`,
+      }}
     >
 
       <div className="invitation-card">
@@ -118,12 +126,13 @@ function InvitationPage({ isPlaying, toggleMusic }) {
               <img src={asset("part-2-photo-1.png")} alt="新人婚紗照" />
               <img src={asset("part-2-photo-2.png")} alt="新人婚紗照" />
               <img src={asset("part-2-photo-3.png")} alt="新人婚紗照" />
+              <img src={asset("part-2-photo-4.png")} alt="新人婚紗照" />
 
               {/* 重複一次，確保無縫循環 */}
               <img src={asset("part-2-photo-1.png")} alt="" aria-hidden="true" />
               <img src={asset("part-2-photo-2.png")} alt="" aria-hidden="true" />
               <img src={asset("part-2-photo-3.png")} alt="" aria-hidden="true" />
-
+              <img src={asset("part-2-photo-4.png")} alt="" aria-hidden="true" />
             </div>
           </div>
 
@@ -336,6 +345,7 @@ function InvitationPage({ isPlaying, toggleMusic }) {
           />
 
           {/* 地圖區：獨立背景與按鈕圖層 */}
+          {/* 交通資訊按鈕區 */}
           <div className="invite-map-scene">
 
             {/* 背景：保留原始圖片比例 */}
@@ -345,63 +355,156 @@ function InvitationPage({ isPlaying, toggleMusic }) {
               alt=""
             />
 
-            {/* 按鈕：疊在背景正中央 */}
+            {/* 交通資訊按鈕 */}
             <div className="invite-map-button-wrap scroll-reveal reveal-delay-1">
-              <a
-                href="https://maps.app.goo.gl/T3FNaykic1zR1GzT8?g_st=ic"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="在 Google Maps 查看婚宴地點"
+              <button
+                type="button"
+                className="invite-transport-trigger"
+                onClick={() => setShowTransportModal(true)}
+                aria-label="查看交通資訊"
               >
                 <img
                   className="invite-map-button"
-                  src={asset("openmap-button.png")}
-                  alt="打開地圖"
+                  src={asset("transport-info-button.png")}
+                  alt="交通資訊"
                 />
-              </a>
+              </button>
             </div>
 
           </div>
+
+          {/* ========================================
+    交通資訊彈窗
+======================================== */}
+          {showTransportModal && (
+            <div
+              className="invite-transport-modal"
+              onClick={() => setShowTransportModal(false)}
+            >
+              {/* 背景遮罩 */}
+              <div className="invite-transport-backdrop" />
+
+              {/* 彈窗內容 */}
+              <div
+                className="invite-transport-panel"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="transport-modal-title"
+                onClick={(e) => e.stopPropagation()}
+              >
+
+                {/* 關閉叉叉 */}
+                <button
+                  type="button"
+                  className="invite-transport-close"
+                  onClick={() => setShowTransportModal(false)}
+                  aria-label="關閉交通資訊"
+                >
+                  ×
+                </button>
+
+
+
+                {/* 捷運資訊 */}
+                <div className="invite-transport-section">
+                  <h3>
+                    <img src={asset("location-flower2.png")} alt="" />
+                    捷運資訊
+                  </h3>
+
+                  <p>
+                    搭乘文湖線
+                    <span className="transport-arrow">▸</span>
+                    捷運「劍南路站」下車
+                    <span className="transport-arrow">▸</span>
+                    2 號出口
+                    <span className="transport-arrow">▸</span>
+                    步行約 1 分鐘抵達
+                  </p>
+                </div>
+
+                {/* 公車資訊 */}
+                <div className="invite-transport-section">
+                  <h3>
+                    <img src={asset("location-flower2.png")} alt="" />
+                    公車資訊
+                  </h3>
+
+                  <p>▸ 於「捷運劍南路站」下車</p>
+                  <p>▸ 以下路線可搭乘抵達</p>
+
+                  <div className="invite-bus-routes">
+                    28、33、72、208、222、287、247、256、267、268、286、
+                    620、646、902、556、683、681、957、955、1801、1573、
+                    紅2、紅3、棕20、藍7、藍20(區)、藍26、綠16、內湖幹線
+                  </div>
+                </div>
+
+                {/* 打開地圖按鈕 */}
+                <a
+                  className="invite-transport-map-link"
+                  href="https://maps.app.goo.gl/T3FNaykic1zR1GzT8?g_st=ic"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="在 Google Maps 查看婚宴地點"
+                >
+                  <img
+                    src={asset("openmap-button.png")}
+                    alt="打開地圖"
+                  />
+                </a>
+
+              </div>
+            </div>
+          )}
 
         </section>
         {/* 05｜SAVE THE DATE */}
         <section className="invite-ending">
 
-          {/* 結尾照片 */}
+          {/* 輪播照片：底層 */}
           <img
             className="invite-ending-photo"
-            src={asset("theend-photo.png")}
-            alt="新人海邊婚紗照"
+            src={asset(endingPhotos[0])}
+            alt=""
+            aria-hidden="true"
           />
 
-          {/* 左側標題：滑動進入浮現 */}
+          <div className="invite-ending-carousel">
+            <div className="invite-ending-track">
+              {[...endingPhotos, ...endingPhotos].map((photo, index) => (
+                <img
+                  key={index}
+                  src={asset(photo)}
+                  alt=""
+                  aria-hidden="true"
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Save the Date 標題 */}
           <img
             className="invite-ending-title scroll-reveal"
             src={asset("theend-title.png")}
             alt="Save the Date 2026.12.13"
           />
 
-          {/* 右側操作按鈕：延遲浮現 */}
+          {/* 操作按鈕 */}
           <div className="invite-ending-actions scroll-reveal reveal-delay-5">
 
-            {/* 回到頂部 */}
             <button
               type="button"
               className="invite-ending-top"
               onClick={() => {
                 setConfettiKey((prev) => prev + 1);
-
-                window.scrollTo({
-                  top: 0,
-                  behavior: "smooth",
-                });
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
               aria-label="回到頂部"
             >
               <img src={asset("scrolltotop.png")} alt="" />
             </button>
 
-            {/* 返回首頁 */}
             <button
               type="button"
               className="invite-ending-back"
@@ -411,7 +514,6 @@ function InvitationPage({ isPlaying, toggleMusic }) {
             </button>
 
           </div>
-
         </section>
 
       </div>

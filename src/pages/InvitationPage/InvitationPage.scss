@@ -74,6 +74,7 @@
   height: auto;
   margin: 0;
 }
+
 .invite-kv-title {
   position: absolute;
   z-index: 11;
@@ -92,6 +93,7 @@
   height: 100%;
   pointer-events: none;
 }
+
 /* ========================================
    02｜新人介紹
 ======================================== */
@@ -122,7 +124,7 @@
   width: 58%;
   max-width: 250px;
   height: auto;
-  margin: 0 auto;
+  margin: -10px auto 10px;
 }
 
 .invite-part2-title {
@@ -643,6 +645,7 @@
   height: auto;
   margin-top: -100px;
 }
+
 /* ========================================
    OPEN MAP
 ======================================== */
@@ -685,7 +688,7 @@
 
   position: relative;
   z-index: 5;
-top: -3%;
+  top: -3%;
   place-self: center;
 
   width: 55%;
@@ -735,15 +738,62 @@ top: -3%;
   z-index: 1;
   width: 100%;
   line-height: 0;
-
   margin-top: -40px;
+  overflow: hidden;
 }
 
-/* 結尾照片 */
+/* 原始照片：保留區塊原本的高度比例 */
 .invite-ending-photo {
   display: block;
   width: 100%;
   height: auto;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 輪播照片底層 */
+.invite-ending-carousel {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 輪播軌道 */
+.invite-ending-track {
+  display: flex;
+  width: 1000%;
+  height: 100%;
+  animation: ending-carousel-scroll 55s linear infinite;
+}
+
+/* 每張照片 */
+.invite-ending-track img {
+  flex: 0 0 10%;
+  width: 10%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 無縫循環 */
+@keyframes ending-carousel-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* 尊重減少動態效果設定 */
+@media (prefers-reduced-motion: reduce) {
+  .invite-ending-track {
+    animation: none;
+  }
 }
 
 /* 左側 Save the Date */
@@ -971,3 +1021,209 @@ top: -3%;
   }
 }
 
+/* ========================================
+   TRANSPORT INFO MODAL
+======================================== */
+
+/* 交通資訊按鈕 */
+.invite-transport-trigger {
+  display: block;
+  width: 100%;
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+/* 彈窗外層 */
+.invite-transport-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  animation: transportModalFade 0.4s ease-out both;
+}
+
+/* 背景遮罩 */
+.invite-transport-backdrop {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(67, 103, 145, 0.25);
+
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+/* 彈窗本體 */
+.invite-transport-panel {
+  position: relative;
+  z-index: 1;
+
+  width: min(100%, 370px);
+  max-height: 82vh;
+  overflow-y: auto;
+
+  padding: 38px 24px 25px;
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+
+  background: rgba(235, 247, 255, 0.97);
+
+  box-shadow:
+    0 12px 40px rgba(65, 103, 145, 0.2),
+    0 3px 10px rgba(65, 103, 145, 0.08);
+
+  color: #42658e;
+
+  animation: transportPanelPop 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* 右上角關閉叉叉 */
+.invite-transport-close {
+  position: absolute;
+  top: 13px;
+  right: 13px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 38px;
+  height: 38px;
+  padding: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+
+  color: #fff;
+  background: rgba(115, 152, 199, 0.9);
+
+  box-shadow: 0 3px 10px rgba(65, 103, 145, 0.2);
+
+  font-family: Arial, sans-serif;
+  font-size: 25px;
+  font-weight: 300;
+  line-height: 38px;
+  text-align: center;
+
+  cursor: pointer;
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #42658e;
+    outline-offset: 3px;
+  }
+}
+
+/* 捷運、公車資訊區塊 */
+.invite-transport-section {
+  margin-bottom: 23px;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+
+    margin: 0 0 10px;
+
+    color: #527eaf;
+    font-size: 17px;
+    font-weight: 600;
+
+    img {
+      display: block;
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+  }
+
+  p {
+    margin: 0 0 8px;
+    color: #496b93;
+    font-size: 14px;
+    line-height: 1.9;
+    word-break: break-word;
+  }
+}
+
+/* 捷運箭頭 */
+.transport-arrow {
+  display: inline-block;
+  margin: 0 4px;
+
+  color: #7da5d2;
+}
+
+/* 公車路線底色 */
+.invite-bus-routes {
+  margin-top: 10px;
+  padding: 11px 13px;
+
+  border-radius: 12px;
+
+  color: #496b93;
+  background: rgba(255, 255, 255, 0.7);
+
+  font-size: 14px;
+  line-height: 1.9;
+  word-break: break-word;
+}
+
+/* 打開地圖按鈕 */
+.invite-transport-map-link {
+  display: block;
+
+  width: min(100%, 260px);
+  margin: 25px auto 0;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+
+    animation: button-float 1.5s ease-in-out infinite;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+/* 彈窗淡入 */
+@keyframes transportModalFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* 彈窗浮現 */
+@keyframes transportPanelPop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
