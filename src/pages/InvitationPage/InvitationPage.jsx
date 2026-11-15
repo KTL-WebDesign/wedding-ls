@@ -1,5 +1,6 @@
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import "./InvitationPage.scss";
 import { useNavigate, useLocation } from "react-router-dom";
 import KvConfetti from "../../components/KvConfetti";
@@ -442,7 +443,7 @@ function InvitationPage({ isPlaying, toggleMusic }) {
           {/* ========================================
     交通資訊彈窗
 ======================================== */}
-          {showTransportModal && (
+          {showTransportModal && createPortal(
             <div
               className="invite-transport-modal"
               onClick={() => setShowTransportModal(false)}
@@ -522,7 +523,7 @@ function InvitationPage({ isPlaying, toggleMusic }) {
 
               </div>
             </div>
-          )}
+            , document.body)}
 
         </section>
 
@@ -546,10 +547,10 @@ function InvitationPage({ isPlaying, toggleMusic }) {
             />
           </button>
         </section>
-               {/* ========================================
+        {/* ========================================
             RSVP FORM MODAL
         ======================================== */}
-        {showRsvpModal && (
+        {showRsvpModal && createPortal(
           <div
             className="invite-transport-modal"
             onClick={() => setShowRsvpModal(false)}
@@ -604,7 +605,7 @@ function InvitationPage({ isPlaying, toggleMusic }) {
                 </div>
               ) : (
                 <>
-                  
+
 
                   <form
                     className="invite-rsvp-form"
@@ -646,11 +647,10 @@ function InvitationPage({ isPlaying, toggleMusic }) {
 
                         {/* 會出席 */}
                         <label
-                          className={`invite-rsvp-choice ${
-                            rsvpForm.attendance === "yes"
+                          className={`invite-rsvp-choice ${rsvpForm.attendance === "yes"
                               ? "active"
                               : ""
-                          }`}
+                            }`}
                         >
                           <input
                             type="radio"
@@ -674,11 +674,10 @@ function InvitationPage({ isPlaying, toggleMusic }) {
 
                         {/* 無法出席 */}
                         <label
-                          className={`invite-rsvp-choice ${
-                            rsvpForm.attendance === "no"
+                          className={`invite-rsvp-choice ${rsvpForm.attendance === "no"
                               ? "active"
                               : ""
-                          }`}
+                            }`}
                         >
                           <input
                             type="radio"
@@ -819,7 +818,7 @@ function InvitationPage({ isPlaying, toggleMusic }) {
 
             </div>
           </div>
-        )}
+          , document.body)}
         {/* 05｜SAVE THE DATE */}
         <section className="invite-ending">
 

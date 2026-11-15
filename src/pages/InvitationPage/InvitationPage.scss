@@ -1145,24 +1145,25 @@
 
 /* 打開地圖按鈕 */
 .invite-transport-map-link {
+  position: relative;
   display: block;
 
-  width: min(100%, 260px);
+  width: min(100%, 225px);
   margin: 25px auto 0;
+
+  animation: button-float 1.5s ease-in-out infinite;
 
   img {
     display: block;
     width: 100%;
     height: auto;
-
-    animation: button-float 1.5s ease-in-out infinite;
   }
 
   &:active {
+    animation-play-state: paused;
     transform: scale(0.97);
   }
 }
-
 /* 彈窗淡入 */
 @keyframes transportModalFade {
   from {
