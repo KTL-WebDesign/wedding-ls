@@ -666,8 +666,8 @@ function InvitationPage({ isPlaying, toggleMusic }) {
                           />
 
                           <span className="invite-rsvp-choice-icon">
-                            ♥
-                          </span>
+  <img src={asset("blue-heart.png")} alt="" />
+</span>
 
                           <span>會出席</span>
                         </label>

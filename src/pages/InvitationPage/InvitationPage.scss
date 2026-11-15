@@ -1389,6 +1389,12 @@
 .invite-rsvp-choice-icon {
   font-size: 19px;
   line-height: 1;
+  img {
+  display: block;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
 }
 
 /* 選取狀態 */
