@@ -391,10 +391,6 @@
    WEDDING PROGRAM
 ======================================== */
 
-/* ========================================
-   WEDDING PROGRAM
-======================================== */
-
 .invite-program {
   position: relative;
   width: 78%;
@@ -560,10 +556,8 @@
 .invite-location-heading {
   position: relative;
   z-index: 3;
-
   width: 100%;
-  min-height: 260px;
-
+  aspect-ratio: 1000 / 702;
   padding-top: 0;
   line-height: 0;
 }
@@ -644,14 +638,11 @@
 .invite-location-photo {
   position: relative;
   z-index: 1;
-
   display: block;
   width: 100%;
   height: auto;
-
-  margin-top: -60px;
+  margin-top: -80px;
 }
-
 /* ========================================
    OPEN MAP
 ======================================== */

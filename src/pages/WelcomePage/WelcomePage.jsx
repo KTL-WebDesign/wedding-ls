@@ -34,6 +34,8 @@ function FlipUnit({ value, label }) {
   const timerRef = useRef(null);
   const displayRef = useRef(current);
 
+
+
   useEffect(() => {
     if (current === displayRef.current) return;
 
@@ -129,6 +131,21 @@ function FlipCountdown({ isActive }) {
 function WelcomePage() {
   const navigate = useNavigate();
 
+  // 預載正式喜帖頁面的 KV 與輪播圖片
+  useEffect(() => {
+    const images = [
+      `${import.meta.env.BASE_URL}assets/invitation/kv-bg.png`,
+      `${import.meta.env.BASE_URL}assets/invitation/part-2-photo-1.png`,
+      `${import.meta.env.BASE_URL}assets/invitation/part-2-photo-2.png`,
+      `${import.meta.env.BASE_URL}assets/invitation/part-2-photo-3.png`,
+    ];
+
+    images.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -205,12 +222,12 @@ function WelcomePage() {
   };
 
   // 前往正式喜帖
-const handleGoToInvitation = () => {
-  navigate("/invitation", {
-    state: { triggerConfetti: Date.now() },
-  });
-  window.scrollTo(0, 0);
-};
+  const handleGoToInvitation = () => {
+    navigate("/invitation", {
+      state: { triggerConfetti: Date.now() },
+    });
+    window.scrollTo(0, 0);
+  };
 
   // 清除計時器
   useEffect(() => {
