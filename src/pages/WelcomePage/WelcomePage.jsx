@@ -224,7 +224,7 @@ const handleGoToInvitation = () => {
     <main
       className="welcome-page"
       style={{
-        "--sky-background": `url("${asset("background-sky.png")}")`,
+        "--sky-background": `url("${window.location.origin}${import.meta.env.BASE_URL}assets/welcome/background-sky.png")`,
       }}
     >
       <div className="welcome-card">

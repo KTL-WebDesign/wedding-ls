@@ -58,9 +58,9 @@ function InvitationPage({ isPlaying, toggleMusic }) {
       ref={pageRef}
       className="invitation-page"
       style={{
-        "--sky-background": `url("${WELCOME_BASE}background-sky.png")`,
-        "--paper-background": `url("${asset("paper-bg.png")}")`,
-      }}
+  "--sky-background": `url("${window.location.origin}${import.meta.env.BASE_URL}assets/welcome/background-sky.png")`,
+  "--paper-background": `url("${window.location.origin}${import.meta.env.BASE_URL}assets/invitation/paper-bg.png")`,
+}}
     >
 
       <div className="invitation-card">
