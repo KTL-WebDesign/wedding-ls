@@ -581,8 +581,7 @@ function InvitationPage({ isPlaying, toggleMusic }) {
                   <h2>感謝您的回覆！</h2>
 
                   <p>
-                    我們已收到您的出席意願，
-                    期待與您一同見證重要時刻。
+                    期待與您一同見證重要時刻
                   </p>
 
                   <button
