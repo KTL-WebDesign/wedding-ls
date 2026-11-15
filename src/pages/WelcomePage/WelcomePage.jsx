@@ -129,6 +129,13 @@ function FlipCountdown({ isActive }) {
 function WelcomePage() {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "instant",
+    });
+  }, []);
+
   const secondSectionRef = useRef(null);
   const printTimerRef = useRef(null);
   const finalButtonTimerRef = useRef(null);
@@ -198,10 +205,12 @@ function WelcomePage() {
   };
 
   // 前往正式喜帖
-  const handleGoToInvitation = () => {
-    navigate("/invitation");
-    window.scrollTo(0, 0);
-  };
+const handleGoToInvitation = () => {
+  navigate("/invitation", {
+    state: { triggerConfetti: Date.now() },
+  });
+  window.scrollTo(0, 0);
+};
 
   // 清除計時器
   useEffect(() => {

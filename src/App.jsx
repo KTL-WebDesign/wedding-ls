@@ -1,11 +1,29 @@
 
 import { useEffect, useRef, useState } from "react";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import {
+  HashRouter,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import InvitationPage from "./pages/InvitationPage/InvitationPage";
 
 const BASE = `${import.meta.env.BASE_URL}assets/welcome/`;
+function ScrollToTop() {
+  const { pathname, key } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant",
+    });
+  }, [pathname, key]);
+
+  return null;
+}
 
 function App() {
   const audioRef = useRef(null);
@@ -59,6 +77,9 @@ function App() {
 
   return (
     <HashRouter>
+      <ScrollToTop />
+
+      {/* 全站共用音樂播放器 */}
       {/* 全站共用音樂播放器 */}
       <audio
         ref={audioRef}
