@@ -6,7 +6,9 @@ import KvConfetti from "../../components/KvConfetti";
 
 // GitHub Pages 相容路徑
 const BASE = `${import.meta.env.BASE_URL}assets/invitation/`;
+const RSVP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfh4LjzgMD1_iZHw2X167W8QQbE0ccfhq9ZSveFud6TfXDB7inK1v0TpsIx_xCcKM/exec";
 const WELCOME_BASE = `${import.meta.env.BASE_URL}assets/welcome/`;
+
 
 const asset = (name) => `${BASE}${name}`;
 const endingPhotos = [
@@ -17,13 +19,89 @@ const endingPhotos = [
   "theend-photo-5.png",
 ];
 
+
 function InvitationPage({ isPlaying, toggleMusic }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [confettiKey, setConfettiKey] = useState(0);
   const [showTransportModal, setShowTransportModal] = useState(false);
-  const pageRef = useRef(null);
+  const [showRsvpModal, setShowRsvpModal] = useState(false);
+  const [rsvpForm, setRsvpForm] = useState({
+    name: "",
+    attendance: "yes",
+    headcount: "1",
+    otherHeadcount: "",
+    note: "",
+  });
 
+  const [rsvpStatus, setRsvpStatus] = useState("idle");
+  const pageRef = useRef(null);
+  const handleRsvpSubmit = (e) => {
+    e.preventDefault();
+
+    const count =
+      rsvpForm.attendance === "no"
+        ? ""
+        : rsvpForm.headcount === "其他"
+          ? Number(rsvpForm.otherHeadcount)
+          : Number(rsvpForm.headcount);
+
+    if (!rsvpForm.name.trim()) {
+      alert("請輸入姓名");
+      return;
+    }
+
+    if (
+      rsvpForm.attendance === "yes" &&
+      rsvpForm.headcount === "其他" &&
+      (!Number.isInteger(count) || count < 11)
+    ) {
+      alert("其他人數請輸入 11 人以上的整數");
+      return;
+    }
+
+    setRsvpStatus("sending");
+
+    const callbackName = `rsvpCallback_${Date.now()}`;
+    const script = document.createElement("script");
+    let finished = false;
+    let timeout;
+
+    const cleanup = () => {
+      if (finished) return;
+      finished = true;
+      delete window[callbackName];
+      script.remove();
+      clearTimeout(timeout);
+    };
+
+    window[callbackName] = (result) => {
+      cleanup();
+      setRsvpStatus(result.success ? "success" : "error");
+    };
+
+    script.onerror = () => {
+      cleanup();
+      setRsvpStatus("error");
+    };
+
+    const params = new URLSearchParams({
+      callback: callbackName,
+      name: rsvpForm.name.trim(),
+      attendance: rsvpForm.attendance,
+      headcount: String(count),
+      note: rsvpForm.note.trim(),
+    });
+
+    script.src = `${RSVP_SCRIPT_URL}?${params.toString()}`;
+
+    timeout = setTimeout(() => {
+      cleanup();
+      setRsvpStatus("error");
+    }, 20000);
+
+    document.body.appendChild(script);
+  };
   useEffect(() => {
     const page = pageRef.current;
     if (!page) return;
@@ -334,29 +412,8 @@ function InvitationPage({ isPlaying, toggleMusic }) {
               src={asset("location-flower2.png")}
               alt=""
             />
-
-          </div>
-
-          {/* 場地照片 */}
-          <img
-            className="invite-location-photo"
-            src={asset("location-photo.png")}
-            alt="婚禮場地照片"
-          />
-
-          {/* 地圖區：獨立背景與按鈕圖層 */}
-          {/* 交通資訊按鈕區 */}
-          <div className="invite-map-scene">
-
-            {/* 背景：保留原始圖片比例 */}
-            <img
-              className="invite-map-bg"
-              src={asset("openmap-bg.png")}
-              alt=""
-            />
-
-            {/* 交通資訊按鈕 */}
-            <div className="invite-map-button-wrap scroll-reveal reveal-delay-1">
+            {/* 交通資訊按鈕：移至地點資訊區塊底部 */}
+            <div className="invite-location-transport-wrap scroll-reveal reveal-delay-1">
               <button
                 type="button"
                 className="invite-transport-trigger"
@@ -372,6 +429,15 @@ function InvitationPage({ isPlaying, toggleMusic }) {
             </div>
 
           </div>
+
+          {/* 場地照片 */}
+          <img
+            className="invite-location-photo"
+            src={asset("location-photo.png")}
+            alt="婚禮場地照片"
+          />
+
+
 
           {/* ========================================
     交通資訊彈窗
@@ -459,6 +525,302 @@ function InvitationPage({ isPlaying, toggleMusic }) {
           )}
 
         </section>
+
+        {/* 05｜RSVP 回覆出席意願 */}
+        <section className="invite-rsvp">
+          <img
+            className="invite-rsvp-bg"
+            src={asset("RSVP-bg-tt.png")}
+            alt=""
+          />
+
+          <button
+            type="button"
+            className="invite-rsvp-trigger"
+            onClick={() => setShowRsvpModal(true)}
+            aria-label="回覆出席意願"
+          >
+            <img
+              src={asset("RSVP-button.png")}
+              alt="回覆出席意願"
+            />
+          </button>
+        </section>
+               {/* ========================================
+            RSVP FORM MODAL
+        ======================================== */}
+        {showRsvpModal && (
+          <div
+            className="invite-transport-modal"
+            onClick={() => setShowRsvpModal(false)}
+          >
+            {/* 背景遮罩：沿用交通資訊 Modal */}
+            <div className="invite-transport-backdrop" />
+
+            {/* 表單視窗：沿用交通資訊 Modal */}
+            <div
+              className="invite-transport-panel invite-rsvp-panel"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="rsvp-title"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* 關閉按鈕：沿用交通資訊 Modal */}
+              <button
+                type="button"
+                className="invite-transport-close"
+                onClick={() => setShowRsvpModal(false)}
+                aria-label="關閉表單"
+              >
+                ×
+              </button>
+
+              {rsvpStatus === "success" ? (
+                /* 送出成功 */
+                <div className="invite-rsvp-success">
+                  <h2>感謝您的回覆！</h2>
+
+                  <p>
+                    我們已收到您的出席意願，
+                    期待與您一同見證重要時刻。
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowRsvpModal(false);
+                      setRsvpStatus("idle");
+
+                      setRsvpForm({
+                        name: "",
+                        attendance: "yes",
+                        headcount: "1",
+                        otherHeadcount: "",
+                        note: "",
+                      });
+                    }}
+                  >
+                    完成
+                  </button>
+                </div>
+              ) : (
+                <>
+                  
+
+                  <form
+                    className="invite-rsvp-form"
+                    onSubmit={handleRsvpSubmit}
+                  >
+                    {/* 姓名 */}
+                    <div className="invite-rsvp-field">
+                      <label
+                        className="invite-rsvp-label"
+                        htmlFor="rsvp-name"
+                      >
+                        姓名
+                        <span className="required-mark">*</span>
+                      </label>
+
+                      <input
+                        id="rsvp-name"
+                        type="text"
+                        required
+                        value={rsvpForm.name}
+                        onChange={(e) =>
+                          setRsvpForm({
+                            ...rsvpForm,
+                            name: e.target.value,
+                          })
+                        }
+                        placeholder="請輸入姓名"
+                      />
+                    </div>
+
+                    {/* 出席意願 */}
+                    <div className="invite-rsvp-field">
+                      <div className="invite-rsvp-label">
+                        出席意願
+                        <span className="required-mark">*</span>
+                      </div>
+
+                      <div className="invite-rsvp-attendance">
+
+                        {/* 會出席 */}
+                        <label
+                          className={`invite-rsvp-choice ${
+                            rsvpForm.attendance === "yes"
+                              ? "active"
+                              : ""
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="attendance"
+                            value="yes"
+                            checked={rsvpForm.attendance === "yes"}
+                            onChange={() =>
+                              setRsvpForm({
+                                ...rsvpForm,
+                                attendance: "yes",
+                              })
+                            }
+                          />
+
+                          <span className="invite-rsvp-choice-icon">
+                            ♥
+                          </span>
+
+                          <span>會出席</span>
+                        </label>
+
+                        {/* 無法出席 */}
+                        <label
+                          className={`invite-rsvp-choice ${
+                            rsvpForm.attendance === "no"
+                              ? "active"
+                              : ""
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="attendance"
+                            value="no"
+                            checked={rsvpForm.attendance === "no"}
+                            onChange={() =>
+                              setRsvpForm({
+                                ...rsvpForm,
+                                attendance: "no",
+                              })
+                            }
+                          />
+
+                          <span className="invite-rsvp-choice-icon">
+                            ×
+                          </span>
+
+                          <span>無法出席</span>
+                        </label>
+
+                      </div>
+                    </div>
+
+                    {/* 出席人數 */}
+                    {rsvpForm.attendance === "yes" && (
+                      <div className="invite-rsvp-field">
+                        <label
+                          className="invite-rsvp-label"
+                          htmlFor="rsvp-headcount"
+                        >
+                          出席人數（包含您本人）
+                          <span className="required-mark">*</span>
+                        </label>
+
+                        <select
+                          id="rsvp-headcount"
+                          value={rsvpForm.headcount}
+                          onChange={(e) =>
+                            setRsvpForm({
+                              ...rsvpForm,
+                              headcount: e.target.value,
+                              otherHeadcount: "",
+                            })
+                          }
+                        >
+                          {Array.from({ length: 10 }, (_, i) => (
+                            <option
+                              key={i + 1}
+                              value={String(i + 1)}
+                            >
+                              {i + 1} 人
+                            </option>
+                          ))}
+
+                          <option value="其他">
+                            其他（11 人以上）
+                          </option>
+                        </select>
+                      </div>
+                    )}
+
+                    {/* 其他人數 */}
+                    {rsvpForm.attendance === "yes" &&
+                      rsvpForm.headcount === "其他" && (
+                        <div className="invite-rsvp-field">
+                          <label
+                            className="invite-rsvp-label"
+                            htmlFor="rsvp-other-count"
+                          >
+                            請輸入出席人數
+                            <span className="required-mark">*</span>
+                          </label>
+
+                          <input
+                            id="rsvp-other-count"
+                            type="number"
+                            min="11"
+                            step="1"
+                            required
+                            value={rsvpForm.otherHeadcount}
+                            onChange={(e) =>
+                              setRsvpForm({
+                                ...rsvpForm,
+                                otherHeadcount: e.target.value,
+                              })
+                            }
+                            placeholder="請輸入 11 人以上的人數"
+                          />
+                        </div>
+                      )}
+
+                    {/* 備註 */}
+                    <div className="invite-rsvp-field">
+                      <label
+                        className="invite-rsvp-label"
+                        htmlFor="rsvp-note"
+                      >
+                        備註
+                        <span className="optional-mark">選填</span>
+                      </label>
+
+                      <textarea
+                        id="rsvp-note"
+                        rows="3"
+                        value={rsvpForm.note}
+                        onChange={(e) =>
+                          setRsvpForm({
+                            ...rsvpForm,
+                            note: e.target.value,
+                          })
+                        }
+                        placeholder="有想告訴新人的話，可以寫在這裡"
+                      />
+                    </div>
+
+                    {/* 錯誤提示 */}
+                    {rsvpStatus === "error" && (
+                      <p className="invite-rsvp-error">
+                        送出失敗，請稍後再試。
+                      </p>
+                    )}
+
+                    {/* 送出按鈕 */}
+                    <button
+                      type="submit"
+                      className="invite-rsvp-submit"
+                      disabled={rsvpStatus === "sending"}
+                    >
+                      {rsvpStatus === "sending"
+                        ? "送出中…"
+                        : "送出回覆"}
+                    </button>
+
+                  </form>
+                </>
+              )}
+
+            </div>
+          </div>
+        )}
         {/* 05｜SAVE THE DATE */}
         <section className="invite-ending">
 
